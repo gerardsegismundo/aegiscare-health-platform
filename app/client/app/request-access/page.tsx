@@ -4,10 +4,19 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Footer from '@/components/Footer'
 
+type RequestAccessFormValues = {
+  firstName: string
+  lastName: string
+  workEmail: string
+  orgName: string
+  role: string
+  usecase: string
+}
+
 export default function RequestAccessPage() {
   const [submitted, setSubmitted] = useState(false)
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RequestAccessFormValues>({
     firstName: '',
     lastName: '',
     workEmail: '',
@@ -16,11 +25,11 @@ export default function RequestAccessPage() {
     usecase: '',
   })
 
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target
-    setFormData((prev) => ({ ...prev, [id]: value }))
+    setFormData((prev: RequestAccessFormValues) => ({ ...prev, [id]: value }))
 
     if (errors[id]) {
       setErrors((prev) => ({ ...prev, [id]: '' }))
@@ -67,14 +76,14 @@ export default function RequestAccessPage() {
     return Object.keys(tempErrors).length === 0
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (validateForm()) {
       setSubmitted(true)
     }
   }
 
-  const getInputStyles = (fieldId) => {
+  const getInputStyles = (fieldId: string) => {
     const base =
       'w-full rounded-xl bg-slate-50 border px-4 py-2.5 text-sm focus:bg-white focus:outline-none transition-all duration-200'
     if (errors[fieldId]) {
@@ -295,7 +304,7 @@ export default function RequestAccessPage() {
                     </label>
                     <textarea
                       id='usecase'
-                      rows='2'
+                      rows={2}
                       value={formData.usecase}
                       onChange={handleChange}
                       className={getInputStyles('usecase')}

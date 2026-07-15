@@ -15,13 +15,13 @@ export default function LoginPage() {
   const [patientEmail, setPatientEmail] = useState('')
   const [patientPassword, setPatientPassword] = useState('')
 
-  const handleProviderSubmit = (e) => {
+  const handleProviderSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // TEMPORARY: Redirect providers to their dashboard
     router.push('/dashboard')
   }
 
-  const handlePatientSubmit = (e) => {
+  const handlePatientSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // TEMPORARY: Direct redirect straight to the patient portal
     router.push('/patient-portal')
