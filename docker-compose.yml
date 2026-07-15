@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cloudcare-postgres
+    environment:
+      POSTGRES_DB: cloudcare
+      POSTGRES_USER: cloudcare
+      POSTGRES_PASSWORD: cloudcare123
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./app/server
+      dockerfile: Dockerfile
+    container_name: cloudcare-backend
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      DATABASE_URL: postgres://cloudcare:cloudcare123@postgres:5432/cloudcare
+      JWT_SECRET: dev-secret-change-me
+    depends_on:
+      - postgres
+    ports:
+      - '4000:4000'
+
+  frontend:
+    build:
+      context: ./app/client
+      dockerfile: Dockerfile
+    container_name: cloudcare-frontend
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    depends_on:
+      - backend
+    ports:
+      - '3000:3000'
+
+volumes:
+  postgres_data:

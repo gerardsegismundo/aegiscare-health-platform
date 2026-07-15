@@ -1,0 +1,17 @@
+{
+  "name": "cloudcare-healthcare-portal",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "app/client",
+    "app/server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w app/server\" \"npm run dev -w app/client\"",
+    "build": "npm run build -w app/server && npm run build -w app/client",
+    "start": "npm run start -w app/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
