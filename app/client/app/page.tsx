@@ -42,10 +42,6 @@ export default function HomePage() {
                 access, appointment management, and document handling.
               </p>
             </div>
-            <div className='rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800'>
-              Future-ready for AWS: ECS/EKS, RDS, S3, Cognito, Secrets Manager,
-              CloudWatch
-            </div>
           </div>
         </section>
 
