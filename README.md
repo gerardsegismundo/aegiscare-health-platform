@@ -1,6 +1,6 @@
-# CloudCare Healthcare Portal
+# AegisCare Healthcare Portal
 
-CloudCare Healthcare Portal is a production-style MVP for a healthcare patient portal designed with future AWS deployment in mind.
+AegisCare Healthcare Portal is a production-style MVP for a healthcare patient portal designed with future AWS deployment in mind.
 
 ## Overview
 

@@ -34,7 +34,7 @@ export default function HomePage() {
           <div className='flex flex-col gap-4 md:flex-row md:items-end md:justify-between'>
             <div>
               <p className='text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700'>
-                CloudCare
+                AegisCare
               </p>
               <h1 className='mt-2 text-4xl font-bold'>Healthcare Portal</h1>
               <p className='mt-3 max-w-2xl text-slate-600'>

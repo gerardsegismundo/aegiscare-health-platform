@@ -19,7 +19,7 @@ app.use(helmet())
 app.use(express.json())
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'cloudcare-backend' })
+  res.json({ status: 'ok', service: 'aegiscare-backend' })
 })
 
 app.post('/api/auth/login', async (req, res) => {
@@ -272,5 +272,5 @@ app.use(notFoundHandler)
 app.use(errorHandler)
 
 app.listen(env.port, () => {
-  console.log(`CloudCare API listening on http://localhost:${env.port}`)
+  console.log(`AegisCare API listening on http://localhost:${env.port}`)
 })

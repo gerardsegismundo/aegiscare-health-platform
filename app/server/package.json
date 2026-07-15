@@ -1,5 +1,5 @@
 {
-  "name": "cloudcare-server",
+  "name": "aegiscare-server",
   "version": "1.0.0",
   "private": true,
   "type": "module",

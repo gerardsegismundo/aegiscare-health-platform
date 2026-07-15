@@ -3,11 +3,11 @@ version: '3.9'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: cloudcare-postgres
+    container_name: aegiscare-postgres
     environment:
-      POSTGRES_DB: cloudcare
-      POSTGRES_USER: cloudcare
-      POSTGRES_PASSWORD: cloudcare123
+      POSTGRES_DB: aegiscare
+      POSTGRES_USER: aegiscare
+      POSTGRES_PASSWORD: aegiscare123
     ports:
       - '5432:5432'
     volumes:
@@ -17,11 +17,11 @@ services:
     build:
       context: ./app/server
       dockerfile: Dockerfile
-    container_name: cloudcare-backend
+    container_name: aegiscare-backend
     environment:
       NODE_ENV: development
       PORT: 4000
-      DATABASE_URL: postgres://cloudcare:cloudcare123@postgres:5432/cloudcare
+      DATABASE_URL: postgres://aegiscare:aegiscare123@postgres:5432/aegiscare
       JWT_SECRET: dev-secret-change-me
     depends_on:
       - postgres
@@ -32,7 +32,7 @@ services:
     build:
       context: ./app/client
       dockerfile: Dockerfile
-    container_name: cloudcare-frontend
+    container_name: aegiscare-frontend
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_URL: http://localhost:4000

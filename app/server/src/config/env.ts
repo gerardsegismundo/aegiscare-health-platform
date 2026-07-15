@@ -7,7 +7,7 @@ export const env = {
   nodeEnv: process.env.NODE_ENV ?? 'development',
   databaseUrl:
     process.env.DATABASE_URL ??
-    'postgres://cloudcare:cloudcare123@localhost:5432/cloudcare',
+    'postgres://aegiscare:aegiscare123@localhost:5432/aegiscare',
   jwtSecret: process.env.JWT_SECRET ?? 'dev-secret-change-me',
   uploadDir: process.env.UPLOAD_DIR ?? './uploads',
 }
