@@ -11,7 +11,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang='en'>
-      <body>{children}</body>
+      {/* Make sure there's no "h-screen" or "overflow-y-scroll" here */}
+      <body className='min-h-screen bg-slate-50 antialiased'>{children}</body>
     </html>
   )
 }
