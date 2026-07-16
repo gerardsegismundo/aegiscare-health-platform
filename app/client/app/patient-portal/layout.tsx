@@ -177,7 +177,7 @@ export default function PatientPortalLayout({
             </div>
             <div className='min-w-0'>
               <p className='text-xs font-black text-slate-900 truncate'>
-                John Doe
+                Taena Mu
               </p>
               <p className='text-[10px] font-mono text-slate-400 truncate'>
                 DOB: 10/14/1990

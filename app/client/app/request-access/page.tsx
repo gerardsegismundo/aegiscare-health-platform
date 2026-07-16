@@ -37,7 +37,7 @@ export default function RequestAccessPage() {
   }
 
   const validateForm = () => {
-    const tempErrors = {}
+    const tempErrors: Partial<Record<keyof RequestAccessFormValues, string>> = {}
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
     if (!formData.firstName.trim()) {

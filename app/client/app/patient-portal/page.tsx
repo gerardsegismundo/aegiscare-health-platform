@@ -1,223 +1,316 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 
+type TrendType = 'bp' | 'weight' | 'glucose'
+
+interface TrendData {
+  title: string
+  unit: string
+  points: number[]
+  labels: string[]
+  color: string
+  fill: string
+}
+
+interface Coordinate {
+  x: number
+  y: number
+  value: number
+}
+
 export default function PatientDashboard() {
+  const [activeTrend, setActiveTrend] = useState<TrendType>('bp')
+
+  // Mock Trend Data for pure SVG rendering
+  const trendData: Record<TrendType, TrendData> = {
+    bp: {
+      title: 'Blood Pressure History',
+      unit: 'mmHg (Systolic)',
+      points: [118, 122, 115, 120, 110, 118],
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      color: 'stroke-indigo-600',
+      fill: 'from-indigo-500/20',
+    },
+    weight: {
+      title: 'Weight Changes',
+      unit: 'lbs',
+      points: [185, 183, 181, 182, 179, 178],
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      color: 'stroke-cyan-500',
+      fill: 'from-cyan-500/20',
+    },
+    glucose: {
+      title: 'Blood Glucose (Fasting)',
+      unit: 'mg/dL',
+      points: [98, 102, 95, 99, 92, 94],
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      color: 'stroke-emerald-500',
+      fill: 'from-emerald-500/20',
+    },
+  }
+
+  const currentTrend = trendData[activeTrend]
+
+  // Map arbitrary health values to SVG vertical viewbox coordinates (y-axis: 0 to 100)
+  const getSVGCoordinates = (points: number[]): Coordinate[] => {
+    const min = Math.min(...points) - 5
+    const max = Math.max(...points) + 5
+    return points.map((p: number, i: number) => {
+      const x = (i / (points.length - 1)) * 300 + 10 // x coordinates 10 to 310
+      const y = 90 - ((p - min) / (max - min)) * 80 // y coordinates scaled to fit height
+      return { x, y, value: p }
+    })
+  }
+
+  const coords: Coordinate[] = getSVGCoordinates(currentTrend.points)
+  const linePath = coords
+    .map((c: Coordinate, i: number) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`)
+    .join(' ')
+  const areaPath = `${linePath} L ${coords[coords.length - 1].x} 95 L ${coords[0].x} 95 Z`
+
   return (
     <div className='p-6 md:p-8 space-y-8 max-w-5xl mx-auto'>
-      {/* Dynamic Header Welcomer */}
+      {/* Header */}
       <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200'>
         <div>
           <h1 className='text-2xl font-black text-slate-900 tracking-tight'>
-            Good morning, John
+            Welcome back, Taena Mu
           </h1>
           <p className='text-slate-500 text-xs mt-1'>
-            Here is a secure summary of your clinical records and schedules.
+            Your clinical vitals and treatment plan are fully updated.
           </p>
         </div>
         <div className='flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-1.5 self-start sm:self-auto'>
           <span className='w-2 h-2 rounded-full bg-emerald-500 animate-pulse' />
-          <span className='text-[10px] font-bold text-emerald-800 font-mono tracking-wider uppercase'>
-            Portal Secured & Audited
+          <span className='text-[10px] font-bold text-emerald-800 font-mono uppercase tracking-wider'>
+            HIPAA Secured
           </span>
         </div>
       </div>
 
-      {/* Highlights Grid */}
-      <div className='grid gap-6 md:grid-cols-3'>
-        {/* Metric 1 */}
-        <div className='bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3'>
-          <div className='flex items-center justify-between'>
-            <span className='text-xs font-bold uppercase tracking-wider text-slate-400 font-mono'>
-              Heart Rate Average
-            </span>
-            <span className='text-indigo-600 bg-indigo-50 rounded-lg p-1.5'>
-              ❤️
-            </span>
-          </div>
-          <div className='flex items-baseline gap-2'>
-            <span className='text-3xl font-black text-slate-900'>72</span>
-            <span className='text-xs text-slate-400 font-bold'>BPM</span>
-          </div>
-          <p className='text-[11px] text-slate-500'>
-            Based on last telemetry sync yesterday.
-          </p>
-        </div>
-
-        {/* Metric 2 */}
-        <div className='bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3'>
-          <div className='flex items-center justify-between'>
-            <span className='text-xs font-bold uppercase tracking-wider text-slate-400 font-mono'>
-              Latest Lab Work
-            </span>
-            <span className='text-cyan-600 bg-cyan-50 rounded-lg p-1.5'>
-              🔬
-            </span>
-          </div>
-          <div className='flex items-baseline gap-2'>
-            <span className='text-lg font-black text-slate-900'>
-              Metabolic Panel
-            </span>
-          </div>
-          <p className='text-[11px] text-emerald-600 font-bold flex items-center gap-1'>
-            ✓ All values marked within normal margins.
-          </p>
-        </div>
-
-        {/* Metric 3 */}
-        <div className='bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3'>
-          <div className='flex items-center justify-between'>
-            <span className='text-xs font-bold uppercase tracking-wider text-slate-400 font-mono'>
-              Active Prescriptions
-            </span>
-            <span className='text-amber-600 bg-amber-50 rounded-lg p-1.5'>
-              💊
-            </span>
-          </div>
-          <div className='flex items-baseline gap-2'>
-            <span className='text-3xl font-black text-slate-900'>2</span>
-            <span className='text-xs text-slate-400 font-bold'>Active RX</span>
-          </div>
-          <p className='text-[11px] text-slate-500'>
-            1 due for refilling in 12 days.
-          </p>
-        </div>
-      </div>
-
-      {/* Main Workspace Layout */}
       <div className='grid gap-6 lg:grid-cols-12'>
-        {/* Left Side: Schedule and Messages */}
+        {/* Left Column: Health Trends Visualization */}
         <div className='lg:col-span-8 space-y-6'>
-          {/* Upcoming Appointment Widget */}
-          <div className='bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm space-y-4'>
-            <div className='flex items-center justify-between'>
-              <h3 className='text-sm font-black text-slate-900 uppercase tracking-wider font-mono'>
-                Upcoming Consultations
-              </h3>
-              <Link
-                href='/patient-portal/appointments'
-                className='text-xs font-bold text-indigo-600 hover:underline'
-              >
-                View Schedule →
-              </Link>
-            </div>
-
-            <div className='rounded-2xl border border-slate-100 bg-slate-50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
-              <div className='flex gap-4 items-start'>
-                <div className='h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 flex flex-col items-center justify-center text-indigo-600 font-bold shrink-0'>
-                  <span className='text-[10px] leading-none uppercase'>
-                    Jul
-                  </span>
-                  <span className='text-sm leading-none'>24</span>
-                </div>
-                <div>
-                  <h4 className='text-xs font-bold text-slate-900'>
-                    Dr. Sarah Jenkins, MD
-                  </h4>
-                  <p className='text-[11px] text-slate-400 mt-0.5'>
-                    Primary Care Consultation (Annual Physical Check)
-                  </p>
-                  <p className='text-[11px] text-slate-500 font-semibold mt-1'>
-                    🕒 09:30 AM (PDT)
-                  </p>
-                </div>
+          <div className='bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm space-y-6'>
+            <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
+              <div>
+                <h3 className='text-sm font-black text-slate-900 uppercase tracking-wider font-mono'>
+                  Personal Health Trends
+                </h3>
+                <p className='text-[11px] text-slate-400 mt-0.5'>
+                  Visualize your vital telemetry over the last 6 months.
+                </p>
               </div>
-              <button className='rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 transition-all shadow-sm'>
-                Join Telehealth Room
-              </button>
-            </div>
-          </div>
 
-          {/* Secure Messaging Preview */}
-          <div className='bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm space-y-4'>
-            <div className='flex items-center justify-between'>
-              <h3 className='text-sm font-black text-slate-900 uppercase tracking-wider font-mono'>
-                Recent Clinician Communications
-              </h3>
-              <Link
-                href='/patient-portal/messages'
-                className='text-xs font-bold text-indigo-600 hover:underline'
-              >
-                Open Messenger →
-              </Link>
-            </div>
-
-            <div className='space-y-3'>
-              <div className='p-3.5 rounded-xl border border-slate-100 hover:border-slate-200 transition-all flex items-start gap-3'>
-                <div className='h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs shrink-0'>
-                  SJ
-                </div>
-                <div className='min-w-0'>
-                  <div className='flex items-center justify-between'>
-                    <h5 className='text-xs font-bold text-slate-900'>
-                      Dr. Sarah Jenkins, MD
-                    </h5>
-                    <span className='text-[10px] text-slate-400'>
-                      Yesterday
-                    </span>
-                  </div>
-                  <p className='text-[11px] text-slate-500 truncate mt-0.5'>
-                    Your lipid panel looks completely healthy. Ensure you
-                    maintain the same dietary habits...
-                  </p>
-                </div>
+              {/* Vital Selector Tabs */}
+              <div className='flex p-1 bg-slate-100 rounded-xl self-start'>
+                <button
+                  onClick={() => setActiveTrend('bp')}
+                  className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all ${activeTrend === 'bp' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-550'}`}
+                >
+                  Blood Pressure
+                </button>
+                <button
+                  onClick={() => setActiveTrend('weight')}
+                  className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all ${activeTrend === 'weight' ? 'bg-white text-cyan-600 shadow-sm' : 'text-slate-550'}`}
+                >
+                  Weight
+                </button>
+                <button
+                  onClick={() => setActiveTrend('glucose')}
+                  className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all ${activeTrend === 'glucose' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-550'}`}
+                >
+                  Glucose
+                </button>
               </div>
+            </div>
+
+            {/* SVG Line Chart Component */}
+            <div className='relative pt-4'>
+              <div className='absolute top-2 right-4 text-right'>
+                <span className='text-2xl font-black text-slate-900'>
+                  {coords[coords.length - 1].value}
+                </span>
+                <span className='text-[10px] font-mono text-slate-400 block'>
+                  {currentTrend.unit} (Latest)
+                </span>
+              </div>
+
+              <svg
+                viewBox='0 0 320 100'
+                className='w-full h-48 overflow-visible'
+              >
+                {/* Y-Axis Gridlines */}
+                <line
+                  x1='10'
+                  y1='15'
+                  x2='310'
+                  y2='15'
+                  stroke='#f1f5f9'
+                  strokeWidth='1'
+                />
+                <line
+                  x1='10'
+                  y1='55'
+                  x2='310'
+                  y2='55'
+                  stroke='#f1f5f9'
+                  strokeWidth='1'
+                />
+                <line
+                  x1='10'
+                  y1='95'
+                  x2='310'
+                  y2='95'
+                  stroke='#e2e8f0'
+                  strokeWidth='1.5'
+                />
+
+                {/* Shaded Area Under Line */}
+                <path
+                  d={areaPath}
+                  fill='url(#gradient-fill)'
+                  className='transition-all duration-300'
+                />
+
+                {/* Connecting Trend Line */}
+                <path
+                  d={linePath}
+                  fill='none'
+                  className={`${currentTrend.color} transition-all duration-300`}
+                  strokeWidth='3'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
+
+                {/* Trend Interactive Data Points */}
+                {coords.map((c: Coordinate, i: number) => (
+                  <g key={i} className='group cursor-pointer'>
+                    <circle
+                      cx={c.x}
+                      cy={c.y}
+                      r='4'
+                      className='fill-white stroke-slate-900 transition-all duration-300 group-hover:r-5'
+                      strokeWidth='2'
+                    />
+                    {/* Tiny Value Labels */}
+                    <text
+                      x={c.x}
+                      y={c.y - 8}
+                      textAnchor='middle'
+                      className='text-[7px] font-black fill-slate-950 font-mono opacity-0 group-hover:opacity-100 transition-opacity bg-white'
+                    >
+                      {c.value}
+                    </text>
+                  </g>
+                ))}
+
+                {/* Month Labels */}
+                {coords.map((c: Coordinate, i: number) => (
+                  <text
+                    key={i}
+                    x={c.x}
+                    y='108'
+                    textAnchor='middle'
+                    className='text-[7px] font-bold fill-slate-400 font-mono'
+                  >
+                    {currentTrend.labels[i]}
+                  </text>
+                ))}
+
+                <defs>
+                  <linearGradient
+                    id='gradient-fill'
+                    x1='0'
+                    y1='0'
+                    x2='0'
+                    y2='1'
+                  >
+                    <stop
+                      offset='0%'
+                      stopColor={
+                        activeTrend === 'bp'
+                          ? '#6366f1'
+                          : activeTrend === 'weight'
+                            ? '#06b6d4'
+                            : '#10b981'
+                      }
+                      stopOpacity='0.15'
+                    />
+                    <stop offset='100%' stopColor='white' stopOpacity='0.0' />
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Quick Links, Auditing, Verification */}
+        {/* Right Column: Dynamic Timeline Flow */}
         <div className='lg:col-span-4 space-y-6'>
-          {/* Quick Upload Container */}
-          <div className='bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-[2rem] p-6 shadow-md space-y-4 relative overflow-hidden'>
-            <div className='absolute top-[-40%] right-[-10%] h-40 w-40 bg-white/5 blur-3xl rounded-full' />
+          <div className='bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm space-y-6'>
+            <div>
+              <h3 className='text-sm font-black text-slate-900 uppercase tracking-wider font-mono'>
+                Appointment Timeline
+              </h3>
+              <p className='text-[11px] text-slate-400 mt-0.5'>
+                Chronological treatment outline.
+              </p>
+            </div>
 
-            <h3 className='text-xs font-bold uppercase tracking-wider font-mono text-indigo-300'>
-              Share Health Documents
-            </h3>
-            <p className='text-xs text-indigo-100 leading-relaxed'>
-              Instantly secure, encrypt, and upload physical immunization
-              papers, insurance copy sheets, or external physical therapy
-              orders.
-            </p>
-            <Link
-              href='/patient-portal/documents'
-              className='block w-full text-center rounded-xl bg-white text-indigo-950 py-3 text-xs font-bold shadow-sm hover:bg-indigo-50 transition-all'
-            >
-              Upload Secure PDF
-            </Link>
-          </div>
-
-          {/* Secure Care Team Widget */}
-          <div className='bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm space-y-4'>
-            <h3 className='text-xs font-bold uppercase tracking-wider font-mono text-slate-400'>
-              Your Care Specialists
-            </h3>
-
-            <div className='space-y-3'>
-              <div className='flex items-center gap-3'>
-                <div className='h-8 w-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs'>
-                  SJ
-                </div>
+            {/* Vertical timeline tree */}
+            <div className='relative pl-6 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100'>
+              {/* Node 1: Upcoming */}
+              <div className='relative'>
+                <span className='absolute left-[-21px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-100 ring-4 ring-white'>
+                  <span className='h-2 w-2 rounded-full bg-indigo-600 animate-pulse' />
+                </span>
                 <div>
-                  <h4 className='text-xs font-bold text-slate-900'>
-                    Dr. Sarah Jenkins
+                  <span className='text-[9px] font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md'>
+                    UPCOMING
+                  </span>
+                  <h4 className='text-xs font-bold text-slate-900 mt-1'>
+                    Specialist Consultation
                   </h4>
                   <p className='text-[10px] text-slate-400'>
-                    Primary Care Physician
+                    Dr. Jenkins • Jul 24, 2026
                   </p>
                 </div>
               </div>
-              <div className='flex items-center gap-3'>
-                <div className='h-8 w-8 rounded-full bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold text-xs'>
-                  MA
-                </div>
+
+              {/* Node 2: Past Annual Checkup */}
+              <div className='relative'>
+                <span className='absolute left-[-21px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-slate-200 ring-4 ring-white'>
+                  <span className='h-2 w-2 rounded-full bg-slate-400' />
+                </span>
                 <div>
-                  <h4 className='text-xs font-bold text-slate-900'>
-                    Marcus Aurelius
+                  <span className='text-[9px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md'>
+                    PAST VISIT
+                  </span>
+                  <h4 className='text-xs font-bold text-slate-700 mt-1'>
+                    Annual Physical Wellness
                   </h4>
                   <p className='text-[10px] text-slate-400'>
-                    Physical Therapist
+                    Complete panel diagnostics • May 12, 2026
+                  </p>
+                </div>
+              </div>
+
+              {/* Node 3: Past Lab Test */}
+              <div className='relative'>
+                <span className='absolute left-[-21px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-slate-200 ring-4 ring-white'>
+                  <span className='h-2 w-2 rounded-full bg-slate-400' />
+                </span>
+                <div>
+                  <span className='text-[9px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md'>
+                    LAB TEST
+                  </span>
+                  <h4 className='text-xs font-bold text-slate-700 mt-1'>
+                    Lipid & Metabolic Sync
+                  </h4>
+                  <p className='text-[10px] text-slate-400'>
+                    Aegis Labs Inc • Jan 10, 2026
                   </p>
                 </div>
               </div>
