@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Footer from '../../components/Footer'
 
 // Define the architecture data structure for the interactive tabs
 const ARCHITECTURE_TABS = {
@@ -335,35 +336,7 @@ export default function ExplorePlatform() {
         </div>
       </main>
 
-      {/* FOOTER */}
-      <footer className='w-full max-w-7xl mx-auto px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-[9px] text-slate-400 font-mono tracking-wider gap-2 shrink-0'>
-        <span>
-          © {new Date().getFullYear()} AEGISCARE INC. ALL CLINICAL DATA IS
-          SECURELY MANAGED.
-        </span>
-        <div className='flex gap-4'>
-          <Link
-            href='/security-whitepaper'
-            className='hover:text-slate-700 transition-colors'
-          >
-            PRIVACY POLICY
-          </Link>
-          <span>•</span>
-          <Link
-            href='/learn-more'
-            className='hover:text-slate-700 transition-colors'
-          >
-            TERMS OF SERVICE
-          </Link>
-          <span>•</span>
-          <Link
-            href='/support'
-            className='hover:text-slate-700 transition-colors'
-          >
-            CONTACT SUPPORT
-          </Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

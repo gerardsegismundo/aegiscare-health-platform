@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="aegisGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" />   <!-- Cyan 400 -->
+      <stop offset="50%" stop-color="#6366f1" />  <!-- Indigo 500 -->
+      <stop offset="100%" stop-color="#4f46e5" /> <!-- Indigo 600 -->
+    </linearGradient>
+  </defs>
+  
+  <!-- Smooth rounded shield/icon background -->
+  <rect width="32" height="32" rx="8" fill="url(#aegisGrad)" />
+  
+  <!-- Stylized Monogram "Æ" in clean, crisp white -->
+  <text 
+    x="16" 
+    y="21" 
+    font-family="system-ui, -apple-system, sans-serif" 
+    font-weight="900" 
+    font-size="14" 
+    fill="#ffffff" 
+    text-anchor="middle"
+    letter-spacing="-0.5"
+  >Æ</text>
+</svg>
