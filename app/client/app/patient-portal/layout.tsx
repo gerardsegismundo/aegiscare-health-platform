@@ -2,13 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ReactNode } from 'react'
 
-export default function PatientPortalLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function PatientPortalLayout({ children }) {
   const pathname = usePathname()
 
   // Dynamic Navigation Items with customized clean SVGs
@@ -177,7 +172,7 @@ export default function PatientPortalLayout({
             </div>
             <div className='min-w-0'>
               <p className='text-xs font-black text-slate-900 truncate'>
-                Taena Mu
+                John Doe
               </p>
               <p className='text-[10px] font-mono text-slate-400 truncate'>
                 DOB: 10/14/1990
