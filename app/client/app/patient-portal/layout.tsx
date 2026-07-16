@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-export default function PatientPortalLayout({ children }) {
+export default function PatientPortalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   // Dynamic Navigation Items with customized clean SVGs
