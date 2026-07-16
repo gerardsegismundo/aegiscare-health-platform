@@ -166,16 +166,16 @@ export default function AegisCareHomepage() {
           </div>
 
           <h1 className='text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight'>
-            A secure cloud platform for connected <br />
+            The safe, unified ecosystem for <br />
             <span className='text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500'>
-              digital healthcare.
+              digital medicine.
             </span>
           </h1>
 
           <p className='text-slate-500 text-xs sm:text-sm leading-relaxed max-w-md'>
-            A HIPAA-focused healthcare platform demonstrating secure
-            authentication, encrypted data management, high availability, and
-            cloud-native architecture.
+            Unifying high-precision patient telemetry, real-time encrypted
+            messaging, and compliant multi-portal workflows into a beautifully
+            simple interface.
           </p>
 
           <div className='pt-2 space-y-3 max-w-md'>
@@ -206,7 +206,7 @@ export default function AegisCareHomepage() {
 
             <div className='grid grid-cols-2 gap-3'>
               <Link
-                href='/live-demo'
+                href='/explore-platform'
                 className='flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 py-3 text-xs font-bold text-slate-700 transition-all shadow-sm'
               >
                 🔬 Live Demo
@@ -240,10 +240,10 @@ export default function AegisCareHomepage() {
               </div>
               <div>
                 <h4 className='text-[12px] font-black uppercase tracking-wider text-slate-800 font-mono'>
-                  HIPAA-Aligned Security
+                  SOC2 Type II
                 </h4>
                 <p className='text-[12px] text-slate-400'>
-                  Patient data protection with encryption.
+                  Continuous auditing.
                 </p>
               </div>
             </div>
@@ -266,10 +266,10 @@ export default function AegisCareHomepage() {
               </div>
               <div>
                 <h4 className='text-[12px] font-black uppercase tracking-wider text-slate-800 font-mono'>
-                  AWS Cloud Architecture
+                  HIPAA Encrypted
                 </h4>
                 <p className='text-[12px] text-slate-400'>
-                  Secure and scalable infrastructure.
+                  Telemetry compliance.
                 </p>
               </div>
             </div>

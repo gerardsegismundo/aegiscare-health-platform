@@ -7,21 +7,16 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM node:20-slim AS runner
+FROM gcr.io/distroless/nodejs20-debian12 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
-USER nextjs
-
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["node_modules/.bin/next", "start", "--port", "3000"]

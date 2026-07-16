@@ -1,285 +1,254 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import Footer from '@/components/Footer'
 
-export default function SecurityWhitepaperPage() {
-  const complianceMatrix = [
-    {
-      safeguard: 'Access Control (164.312.a.1)',
-      requirement:
-        'Unique user identification, multi-factor authorization, and emergency access procedures.',
-      implementation:
-        'MFA-enforced WebAuthn passkey authentication, role-isolated containerized workspaces, and automated 15-minute idle-session termination.',
-    },
-    {
-      safeguard: 'Transmission Security (164.312.e.1)',
-      requirement: 'Guard against unauthorized access to PHI in transit.',
-      implementation:
-        'Enforced TLS 1.3 encryption with Perfect Forward Secrecy. Point-to-point zero-trust database routing with end-to-end encryption (E2EE).',
-    },
-    {
-      safeguard: 'Audit Controls (164.312.b)',
-      requirement:
-        'Record and examine system activity containing or using PHI.',
-      implementation:
-        'Tamper-proof, cryptographically signed ledger logging of every database handshake, read, write, and API call.',
-    },
-    {
-      safeguard: 'Integrity Controls (164.312.c.1)',
-      requirement: 'Protect PHI from improper alteration or destruction.',
-      implementation:
-        'Database write hashing utilizing cryptographic integrity checks to immediately detect and flag unauthorized mutations.',
-    },
-  ]
+const WHITEPAPER_SECTIONS = [
+  {
+    id: 'encryption',
+    title: '1. Cryptographic Safeguards',
+    subTitle: 'At-Rest & In-Transit Schemes',
+    content: `All patient PII (Personally Identifiable Information) and clinical telemetry data are protected using cryptographic protocols modeled on federal standards:
+
+    • Data At Rest: Secured via AES-256 encryption. We leverage AWS KMS (Key Management Service) with customer-managed keys (CMKs) to enforce strict cryptographic separation of data. Envelope encryption is applied per patient record to isolate breach blasts.
+    • Data In Transit: Transport Layer Security (TLS) 1.3 is strictly enforced on all public routing endpoints. Weak cipher suites and deprecated TLS protocols (1.0, 1.1, 1.2) are blocked at the Application Load Balancer layer.`,
+  },
+  {
+    id: 'identity',
+    title: '2. Identity & Access Management',
+    subTitle: 'Zero-Trust Authentication Engine',
+    content: `Authentication and authorization pathways are designed using Zero-Trust principles to prevent privilege escalation:
+
+    • Identity Provider: Handled using Amazon Cognito User Pools integrated with Multi-Factor Authentication (MFA).
+    • Authorization Tokens: Uses short-lived, cryptographically signed JSON Web Tokens (JWTs). Tokens are transmitted via secure, httpOnly, sameSite cookies to protect against Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF).
+    • Edge Protection: Next.js edge middleware parses and validates token signatures before matching requested routes to private subnets.`,
+  },
+  {
+    id: 'network',
+    title: '3. Network Security & Architecture',
+    subTitle: 'VPC Subnet & Threat Isolation',
+    content: `Our network topography is engineered inside an isolated Amazon VPC to prevent lateral movement of malicious traffic:
+
+    • Public Facing Layer: Only the Application Load Balancer (ALB) and public subnets are exposed to public traffic. Static frontend assets are securely distributed globally via Amazon CloudFront.
+    • Application Layer: The Next.js application runtime is deployed inside private VPC subnets. These instances have no direct route to the open internet and communicate externally only via NAT Gateways.
+    • Database Layer: Amazon RDS and DynamoDB instances reside in isolated database subnets, restricted by security groups that only permit access from the application layer.`,
+  },
+  {
+    id: 'compliance',
+    title: '4. Audit & Compliance Protocols',
+    subTitle: 'Continuous Logging for HIPAA & SOC2',
+    content: `To ensure regulatory compliance with HIPAA's audit control specifications, we have configured a comprehensive audit trail:
+
+    • CloudTrail Logging: Every API write operation, IAM policy alteration, and KMS key access is recorded in a write-once AWS CloudTrail log.
+    • Log Integrity: Audit logs are stored in a secure Amazon S3 bucket with S3 Object Lock enabled in Compliance Mode, preventing deletion or alteration of logs—even by root accounts.
+    • Continuous Monitoring: Real-time system vitals are monitored via AWS CloudWatch, triggering automated PagerDuty or Slack alerts if unexpected behavior is detected.`,
+  },
+]
+
+export default function SecurityWhitepaper() {
+  const [activeSection, setActiveSection] = useState('encryption')
 
   return (
-    <div className='min-h-screen bg-slate-50 text-slate-900 selection:bg-cyan-500/10 selection:text-cyan-900 overflow-x-hidden relative flex flex-col justify-between'>
-      {/* Ambient Cleanroom Glows */}
-      <div className='absolute top-[-10%] left-[-20%] -z-10 h-[1000px] w-[1000px] rounded-full bg-indigo-500/5 blur-[220px] pointer-events-none' />
-      <div className='absolute bottom-[-10%] right-[-10%] -z-10 h-[1000px] w-[1000px] rounded-full bg-cyan-500/5 blur-[220px] pointer-events-none' />
+    <div className='min-h-screen w-screen bg-slate-50 text-slate-800 flex flex-col justify-between overflow-x-hidden relative selection:bg-indigo-100 selection:text-indigo-900'>
+      {/* SAFE BACKGROUND BLURS */}
+      <div className='absolute inset-0 overflow-hidden pointer-events-none z-0'>
+        <div className='absolute top-[-10%] left-[-10%] h-[500px] w-[500px] bg-indigo-200/20 blur-[130px] rounded-full' />
+        <div className='absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] bg-cyan-200/25 blur-[150px] rounded-full' />
+      </div>
 
-      {/* Header */}
-      <header className='w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-50'>
-        <div className='mx-auto flex max-w-[1400px] items-center justify-between px-8 py-5'>
-          <Link
-            href='/'
-            className='flex items-center gap-3 text-2xl font-black tracking-tight text-slate-900 hover:opacity-90 transition-opacity'
-          >
-            <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1.5px] shadow-md shadow-indigo-500/5'>
-              <span className='flex h-full w-full items-center justify-center rounded-[10px] bg-white text-sm font-bold text-cyan-600'>
-                Æ
-              </span>
-            </div>
-            AegisCare
-          </Link>
-
-          <div className='flex items-center gap-4'>
-            <Link
-              href='/'
-              className='text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors'
-            >
-              Back to Home
-            </Link>
-            <Link
-              href='/login'
-              className='rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-indigo-500/10 hover:shadow-cyan-500/20 hover:brightness-105 transition-all hover:scale-[1.01]'
-            >
-              Access Gateway
-            </Link>
+      {/* HEADER / NAVIGATION BAR */}
+      <header className='w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between z-20 relative shrink-0'>
+        <Link
+          href='/'
+          className='flex items-center gap-3 text-lg font-black tracking-tight text-slate-900'
+        >
+          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-cyan-400 via-indigo-500 to-indigo-600 p-[1px] shadow-sm'>
+            <span className='flex h-full w-full items-center justify-center rounded-[7px] bg-white text-xs font-black text-indigo-600'>
+              Æ
+            </span>
           </div>
-        </div>
+          AegisCare
+        </Link>
+
+        <nav className='hidden md:flex items-center gap-6'>
+          <Link
+            href='/explore-platform'
+            className='text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors'
+          >
+            Explore Platform
+          </Link>
+          <Link
+            href='/learn-more'
+            className='text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors'
+          >
+            Learn More
+          </Link>
+          <Link
+            href='/security-whitepaper'
+            className='text-xs font-bold text-indigo-600 transition-colors'
+          >
+            Security Whitepaper
+          </Link>
+        </nav>
+
+        <Link
+          href='/login'
+          className='rounded-xl border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-xs font-black text-slate-700 shadow-sm transition-all'
+        >
+          Portal Login
+        </Link>
       </header>
 
-      {/* Main Content Area */}
-      <article className='mx-auto w-full max-w-[1000px] px-8 py-16 md:py-24 flex-grow space-y-12'>
-        {/* Document Metadata Header */}
-        <div className='border-b border-slate-250 pb-8 space-y-4'>
-          <div className='flex items-center gap-2'>
-            <span className='rounded-full bg-indigo-500/10 px-3 py-1 text-[10px] font-mono font-bold text-indigo-700 uppercase tracking-widest'>
-              Technical Whitepaper
-            </span>
-            <span className='text-xs text-slate-400'>•</span>
-            <span className='text-xs font-mono text-slate-400'>
-              VERSION 4.2 — JULY 2026
-            </span>
+      {/* MAIN CONTENT AREA */}
+      <main className='w-full max-w-7xl mx-auto px-6 flex-grow flex flex-col lg:flex-row items-stretch gap-12 lg:gap-16 z-10 relative py-12'>
+        {/* LEFT COLUMN: Table of Contents & Compliance Overview */}
+        <div className='flex flex-col lg:w-[35%] shrink-0 space-y-6 max-w-sm justify-between'>
+          <div className='space-y-5'>
+            {/* Compliance Stamp */}
+            <div className='inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-full px-3 py-1 self-start'>
+              <span className='w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse' />
+              <span className='text-[9px] font-black text-emerald-700 tracking-widest uppercase font-mono'>
+                Audit Readiness Verified
+              </span>
+            </div>
+
+            <h1 className='text-3xl font-black tracking-tight text-slate-900 leading-tight'>
+              Platform <br />
+              <span className='text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500'>
+                Security Controls.
+              </span>
+            </h1>
+
+            <p className='text-slate-500 text-xs sm:text-sm leading-relaxed font-medium'>
+              Interactive technical documentation outlines AegisCare's
+              compliance alignment with HIPAA regulations and SOC2 security
+              frameworks.
+            </p>
+
+            {/* Interactive Index Link List */}
+            <nav className='pt-4 space-y-2.5 border-t border-slate-200/60'>
+              <div className='text-[10px] font-black tracking-wider text-slate-400 uppercase font-mono mb-2'>
+                Whitepaper Index
+              </div>
+              {WHITEPAPER_SECTIONS.map((sec) => (
+                <button
+                  key={sec.id}
+                  onClick={() => setActiveSection(sec.id)}
+                  className={`w-full text-left text-xs font-bold transition-all flex items-center justify-between ${
+                    activeSection === sec.id
+                      ? 'text-indigo-600 translate-x-1.5'
+                      : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <span>{sec.title}</span>
+                  {activeSection === sec.id && (
+                    <span className='text-indigo-600'>→</span>
+                  )}
+                </button>
+              ))}
+            </nav>
           </div>
-          <h1 className='text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl'>
-            AegisCare Security & Compliance Architecture
-          </h1>
-          <p className='text-lg text-slate-500 leading-relaxed'>
-            An in-depth guide to cryptographic isolation, PHI-handling
-            pipelines, and HIPAA-compliant database topologies on the AegisCare
-            framework.
-          </p>
+
+          {/* Quick Technical Specs Highlight */}
+          <div className='hidden lg:block bg-slate-900 text-white rounded-2xl p-4 border border-slate-800 shadow-md font-mono text-[9px] space-y-2'>
+            <div className='text-indigo-400 font-bold uppercase tracking-wider text-[8px]'>
+              PLATFORM CRYPTO SPECS
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-slate-400'>Transport Enc:</span>
+              <span>TLS 1.3 Strict</span>
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-slate-400'>Database Cipher:</span>
+              <span>AES-256 Envelope</span>
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-slate-400'>Key Custody:</span>
+              <span>AWS KMS CMK</span>
+            </div>
+          </div>
         </div>
 
-        {/* Executive Summary */}
-        <section className='space-y-4'>
-          <h2 className='text-2xl font-bold text-slate-900 tracking-tight'>
-            1. Executive Summary
-          </h2>
-          <p className='text-slate-600 leading-relaxed'>
-            In modern healthcare, database security can no longer rely on
-            traditional network firewalls. AegisCare operates on a strict
-            **Zero-Trust Network Architecture (ZTNA)**. Every connection, query,
-            and user handshake is treated as hostile until authenticated,
-            encrypted, and structurally validated. By containerizing workloads
-            and enforcing encryption end-to-end, AegisCare eliminates lateral
-            threat movement.
-          </p>
-        </section>
-
-        {/* Encryption Standards & Cryptographic Keys */}
-        <section className='space-y-4'>
-          <h2 className='text-2xl font-bold text-slate-900 tracking-tight'>
-            2. Cryptographic Controls
-          </h2>
-          <p className='text-slate-600 leading-relaxed'>
-            Data is guarded using state-of-the-art symmetric and asymmetric
-            cryptographic systems. Keys are isolated in hardware security
-            modules (HSMs) and rotated automatically.
-          </p>
-
-          <div className='grid gap-6 sm:grid-cols-2 pt-4'>
-            <div className='p-6 rounded-2xl bg-white border border-slate-200 shadow-sm'>
-              <h4 className='font-bold text-slate-900'>
-                Data in Transit (TLS 1.3)
-              </h4>
-              <p className='text-slate-500 text-xs mt-2 leading-relaxed'>
-                All external and internal network requests are wrapped in TLS
-                1.3 tunnels. Cipher suites are strictly limited to
-                zero-round-trip-time (0-RTT) configurations utilizing ECDHE for
-                perfect forward secrecy.
-              </p>
-            </div>
-            <div className='p-6 rounded-2xl bg-white border border-slate-200 shadow-sm'>
-              <h4 className='font-bold text-slate-900'>
-                Data at Rest (AES-256-GCM)
-              </h4>
-              <p className='text-slate-500 text-xs mt-2 leading-relaxed'>
-                Patient records and system databases are encrypted at the block
-                storage layer. Each unique customer schema uses its own isolated
-                master key managed by AWS KMS with envelope encryption
-                protocols.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Technical Sequence: Patient Query Routing */}
-        <section className='space-y-6'>
-          <h2 className='text-2xl font-bold text-slate-900 tracking-tight'>
-            3. Zero-Trust Patient Query Routing
-          </h2>
-          <p className='text-slate-600 leading-relaxed'>
-            When a provider requests an encrypted medical file, the data
-            traverses a multi-layered verification process. The diagram below
-            illustrates the deterministic, critical steps involved:
-          </p>
-
-          {/* Procedural Step Component */}
-          <div className='border border-slate-200 rounded-[2rem] bg-white p-8 shadow-sm'>
-            <div className='space-y-8 relative before:absolute before:left-4 before:top-4 before:bottom-4 before:w-[2px] before:bg-slate-100'>
-              <div className='relative pl-10'>
-                <div className='absolute left-1.5 top-1.5 h-5 w-5 rounded-full bg-indigo-600 border-4 border-white flex items-center justify-center text-[10px] text-white font-bold shadow' />
-                <h4 className='text-sm font-bold text-slate-900 font-mono uppercase tracking-wider'>
-                  Step 1: Mutual Authentication Handshake
-                </h4>
-                <p className='text-slate-500 text-xs mt-1 leading-relaxed'>
-                  The clinician's browser establishes a secure session via TLS
-                  1.3 using a hardware-bound WebAuthn security key (Passkey),
-                  registering their active biometric state.
-                </p>
+        {/* RIGHT COLUMN: Interactive Document Viewer */}
+        <div className='flex-grow w-full lg:w-[65%] flex flex-col'>
+          <div className='bg-white border border-slate-200/90 rounded-3xl shadow-[0_20px_50px_-15px_rgba(0,0,0,0.03),0_10px_20px_-10px_rgba(0,0,0,0.02)] p-6 sm:p-8 flex-grow flex flex-col justify-between min-h-[420px]'>
+            {/* Header Area */}
+            <div>
+              <div className='flex items-center justify-between gap-4 border-b border-slate-100 pb-5'>
+                <div>
+                  <span className='text-[8.5px] font-mono tracking-widest text-indigo-600 uppercase font-black'>
+                    {
+                      WHITEPAPER_SECTIONS.find((s) => s.id === activeSection)
+                        ?.subTitle
+                    }
+                  </span>
+                  <h2 className='text-lg sm:text-xl font-black text-slate-900 tracking-tight mt-1'>
+                    {
+                      WHITEPAPER_SECTIONS.find((s) => s.id === activeSection)
+                        ?.title
+                    }
+                  </h2>
+                </div>
+                <div className='text-slate-400 select-none hidden sm:block'>
+                  🛡️ Sec Ops Doc-04
+                </div>
               </div>
 
-              <div className='relative pl-10'>
-                <div className='absolute left-1.5 top-1.5 h-5 w-5 rounded-full bg-indigo-600 border-4 border-white flex items-center justify-center text-[10px] text-white font-bold shadow' />
-                <h4 className='text-sm font-bold text-slate-900 font-mono uppercase tracking-wider'>
-                  Step 2: Micro-Segmentation Route
-                </h4>
-                <p className='text-slate-500 text-xs mt-1 leading-relaxed'>
-                  The API gateway recognizes the clinician's role and maps their
-                  routing payload directly to an isolated, containerized
-                  serverless database instance. At no point can they access
-                  neighboring data silos.
-                </p>
-              </div>
-
-              <div className='relative pl-10'>
-                <div className='absolute left-1.5 top-1.5 h-5 w-5 rounded-full bg-indigo-600 border-4 border-white flex items-center justify-center text-[10px] text-white font-bold shadow' />
-                <h4 className='text-sm font-bold text-slate-900 font-mono uppercase tracking-wider'>
-                  Step 3: Envelope Key Decryption
-                </h4>
-                <p className='text-slate-500 text-xs mt-1 leading-relaxed'>
-                  A transient database key is queried from the HSM, decrypting
-                  the requested patient record block in volatile RAM. The raw,
-                  plaintext record is never written to a disk swap space.
-                </p>
-              </div>
-
-              <div className='relative pl-10'>
-                <div className='absolute left-1.5 top-1.5 h-5 w-5 rounded-full bg-indigo-600 border-4 border-white flex items-center justify-center text-[10px] text-white font-bold shadow' />
-                <h4 className='text-sm font-bold text-slate-900 font-mono uppercase tracking-wider'>
-                  Step 4: Tamper-Proof Audit Logging
-                </h4>
-                <p className='text-slate-500 text-xs mt-1 leading-relaxed'>
-                  Before the record is displayed to the clinician, an encrypted
-                  transaction hash containing the query context is written
-                  directly to an immutable, append-only security ledger.
-                </p>
+              {/* Dynamic Content Panel */}
+              <div className='py-6 font-medium text-[11.5px] sm:text-xs text-slate-500 leading-relaxed whitespace-pre-line'>
+                {
+                  WHITEPAPER_SECTIONS.find((s) => s.id === activeSection)
+                    ?.content
+                }
               </div>
             </div>
+
+            {/* Compliance Guarantee Footer inside Card */}
+            <div className='border-t border-slate-100 pt-5 mt-6 flex flex-col sm:flex-row sm:items-center justify-between text-[9.5px] text-slate-400 font-mono tracking-wide gap-3'>
+              <div className='flex items-center gap-1.5'>
+                <span className='w-1.5 h-1.5 rounded-full bg-emerald-500' />
+                HIPAA Administrative & Technical Safeguards Aligned.
+              </div>
+              <Link
+                href='/explore-platform'
+                className='text-indigo-600 font-bold hover:underline shrink-0'
+              >
+                Inspect IaC Deployment Codes →
+              </Link>
+            </div>
           </div>
-        </section>
+        </div>
+      </main>
 
-        {/* HIPAA Compliance Matrix */}
-        <section className='space-y-4'>
-          <h2 className='text-2xl font-bold text-slate-900 tracking-tight'>
-            4. HIPAA Compliance Mapping
-          </h2>
-          <p className='text-slate-600 leading-relaxed'>
-            The AegisCare core framework directly maps to the physical,
-            administrative, and technical safeguards detailed under the **HIPAA
-            Security Rule**.
-          </p>
-
-          <div className='overflow-x-auto border border-slate-200 rounded-2xl bg-white shadow-sm mt-6'>
-            <table className='w-full text-left border-collapse'>
-              <thead>
-                <tr className='bg-slate-50 border-b border-slate-200'>
-                  <th className='px-6 py-4 text-xs font-bold font-mono tracking-wider text-slate-400 uppercase'>
-                    HIPAA Safeguard
-                  </th>
-                  <th className='px-6 py-4 text-xs font-bold font-mono tracking-wider text-slate-400 uppercase'>
-                    Requirement
-                  </th>
-                  <th className='px-6 py-4 text-xs font-bold font-mono tracking-wider text-slate-400 uppercase'>
-                    AegisCare Architecture Implementation
-                  </th>
-                </tr>
-              </thead>
-              <tbody className='divide-y divide-slate-100 text-xs'>
-                {complianceMatrix.map((item, idx) => (
-                  <tr
-                    key={idx}
-                    className='hover:bg-slate-50/50 transition-colors'
-                  >
-                    <td className='px-6 py-4 font-bold text-slate-900 align-top whitespace-nowrap'>
-                      {item.safeguard}
-                    </td>
-                    <td className='px-6 py-4 text-slate-500 align-top max-w-[250px] leading-relaxed'>
-                      {item.requirement}
-                    </td>
-                    <td className='px-6 py-4 text-slate-700 font-medium align-top leading-relaxed'>
-                      {item.implementation}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* Audit Verification */}
-        <section className='p-6 rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4'>
-          <div>
-            <h4 className='text-sm font-extrabold text-slate-900'>
-              Request External Audit Artifacts
-            </h4>
-            <p className='text-slate-500 text-xs mt-1'>
-              Our SOC 2 Type II report and third-party penetration test
-              certifications are available under Non-Disclosure Agreements
-              (NDA).
-            </p>
-          </div>
-          <button className='rounded-xl bg-slate-900 text-white font-bold text-xs px-5 py-3 hover:bg-slate-800 transition-colors shrink-0'>
-            Contact Compliance Officer
-          </button>
-        </section>
-      </article>
-
-      <Footer />
+      {/* FOOTER */}
+      <footer className='w-full max-w-7xl mx-auto px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-[9px] text-slate-400 font-mono tracking-wider gap-2 shrink-0'>
+        <span>
+          © {new Date().getFullYear()} AEGISCARE INC. ALL CLINICAL DATA IS
+          SECURELY MANAGED.
+        </span>
+        <div className='flex gap-4'>
+          <Link
+            href='/security-whitepaper'
+            className='hover:text-slate-700 transition-colors'
+          >
+            PRIVACY POLICY
+          </Link>
+          <span>•</span>
+          <Link
+            href='/learn-more'
+            className='hover:text-slate-700 transition-colors'
+          >
+            TERMS OF SERVICE
+          </Link>
+          <span>•</span>
+          <Link
+            href='/support'
+            className='hover:text-slate-700 transition-colors'
+          >
+            CONTACT SUPPORT
+          </Link>
+        </div>
+      </footer>
     </div>
   )
 }
