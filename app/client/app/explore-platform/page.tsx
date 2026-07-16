@@ -145,7 +145,7 @@ module "vpc" {
 }
 
 export default function ExplorePlatform() {
-  const [activeTab, setActiveTab] = useState('telemetry')
+  const [activeTab, setActiveTab] = useState<keyof typeof ARCHITECTURE_TABS>('telemetry')
   const activeData = ARCHITECTURE_TABS[activeTab]
 
   return (
@@ -228,12 +228,12 @@ export default function ExplorePlatform() {
           {/* Interactive Interactive Selector Tabs */}
           <div className='space-y-3 flex-grow flex flex-col justify-center max-w-md'>
             {Object.keys(ARCHITECTURE_TABS).map((tabKey) => {
-              const tab = ARCHITECTURE_TABS[tabKey]
+              const tab = ARCHITECTURE_TABS[tabKey as keyof typeof ARCHITECTURE_TABS]
               const isSelected = activeTab === tabKey
               return (
                 <button
                   key={tabKey}
-                  onClick={() => setActiveTab(tabKey)}
+                  onClick={() => setActiveTab(tabKey as keyof typeof ARCHITECTURE_TABS)}
                   className={`w-full text-left p-4 rounded-2xl border transition-all ${
                     isSelected
                       ? 'bg-white border-slate-200/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] scale-[1.01]'
@@ -296,7 +296,7 @@ export default function ExplorePlatform() {
                 Subsystem Integration Highlights
               </div>
               <ul className='grid grid-cols-1 sm:grid-cols-3 gap-2'>
-                {activeData.techStack.map((tech, idx) => (
+                  {activeData.techStack.map((tech: string, idx: number) => (
                   <li
                     key={idx}
                     className='bg-indigo-950/30 border border-indigo-500/10 rounded-lg px-2.5 py-1 text-[9px] text-indigo-400 flex items-center gap-1.5'
@@ -321,7 +321,7 @@ export default function ExplorePlatform() {
                 Infrastructure Assurance Checklist
               </div>
               <div className='space-y-1.5'>
-                {activeData.benefits.map((benefit, idx) => (
+                  {activeData.benefits.map((benefit: string, idx: number) => (
                   <div
                     key={idx}
                     className='flex items-start gap-2 text-[9.5px] text-slate-400 leading-tight'
