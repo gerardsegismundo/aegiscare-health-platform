@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Footer from '../../components/Footer'
+import Footer from '@/components/Footer'
 
 // Highly technical Q&A tailored for a cloud engineering portfolio
 const SYSTEM_DESIGN_FAQS = [

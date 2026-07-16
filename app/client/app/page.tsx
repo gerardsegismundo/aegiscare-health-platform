@@ -289,7 +289,7 @@ export default function AegisCareHomepage() {
           {/* Isometric Transform Wrapper */}
           <div className='relative w-full max-w-xl [transform:perspective(1200px)_rotateY(-10deg)_rotateX(5deg)] hover:[transform:perspective(1200px)_rotateY(-3deg)_rotateX(1deg)] transition-all duration-700 ease-out'>
             {/* LAYER 1: BACKWARDS-FLOATING COMPLIANCE SHIELD CARD */}
-            <div className='absolute -top-10 -right-8 bg-slate-900 text-white rounded-2xl p-3 shadow-2xl border border-slate-800 flex items-center gap-3 z-0 [transform:translateZ(-30px)] scale-90 pointer-events-none hidden sm:flex'>
+            <div className='absolute -top-10 -right-8 bg-slate-900 text-white rounded-2xl p-3 shadow-2xl border border-slate-800 items-center gap-3 z-0 [transform:translateZ(-30px)] scale-90 pointer-events-none hidden sm:flex'>
               <div className='h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400'>
                 🛡️
               </div>
@@ -785,7 +785,7 @@ export default function AegisCareHomepage() {
                               className={`flex flex-col max-w-[85%] ${
                                 msg.sender === 'patient'
                                   ? 'self-end items-end'
-                                  : 'self-start items-start'
+                                  : 'self-start'
                               }`}
                             >
                               <div
@@ -804,7 +804,7 @@ export default function AegisCareHomepage() {
                           ))}
 
                           {/* Simulated Live Doctor Typing Indicator */}
-                          <div className='self-start items-start flex gap-1.5 items-center bg-slate-100/60 rounded-full px-2.5 py-1 text-[7.5px] text-slate-400 font-bold'>
+                          <div className='self-start flex gap-1.5 items-center bg-slate-100/60 rounded-full px-2.5 py-1 text-[7.5px] text-slate-400 font-bold'>
                             <span className='flex gap-0.5'>
                               <span
                                 className='w-1 h-1 bg-slate-400 rounded-full animate-bounce'
@@ -908,7 +908,7 @@ export default function AegisCareHomepage() {
             </div>
 
             {/* LAYER 3: FORWARD-FLOATING TELEMETRY SENSOR CARD */}
-            <div className='absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200/80 flex items-center gap-3 z-20 [transform:translateZ(40px)] scale-95 pointer-events-none hidden sm:flex'>
+            <div className='absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200/80 items-center gap-3 z-20 [transform:translateZ(40px)] scale-95 pointer-events-none hidden sm:flex'>
               <div className='h-9 w-9 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-500 relative shrink-0'>
                 <span className='animate-ping absolute inline-flex h-full w-full rounded-xl bg-red-400 opacity-20' />
                 ❤️

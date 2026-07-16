@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Footer from '../../components/Footer'
+import Footer from '@/components/Footer'
 
 // Define the architecture data structure for the interactive tabs
 const ARCHITECTURE_TABS = {
