@@ -288,7 +288,8 @@ export default function AegisCareHomepage() {
           <div className='absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none' />
 
           {/* Isometric Transform Wrapper */}
-          <div className='relative w-full max-w-lg bg-white border border-slate-200/90 rounded-3xl shadow-2xl overflow-hidden [transform:perspective(1000px)_rotateY(-6deg)_rotateX(3deg)] hover:[transform:none] transition-all duration-700 backdrop-blur-sm'>
+          <div className='relative w-full max-w-lg shadow-2xl transition-all duration-700 hover:scale-[1.02]'>
+            <div className='bg-white border border-slate-200/90 rounded-3xl overflow-hidden [transform:perspective(1000px)_rotateY(-6deg)_rotateX(3deg)] hover:[transform:none] transition-all duration-700 backdrop-blur-sm'>
             {/* Browser Window Chrome */}
             <div className='bg-slate-50 border-b border-slate-100 px-4 py-2.5 flex items-center justify-between'>
               <div className='flex items-center gap-1.5'>
@@ -350,8 +351,8 @@ export default function AegisCareHomepage() {
                       <p className='text-[6px] text-slate-400 font-mono tracking-wide'>
                         DOB: 10/14/1990
                       </p>
-                    </div>
-                  </div>
+            </div>
+          </div>
                   <div className='flex items-center justify-center gap-1 w-full rounded-lg border border-slate-200 bg-white py-1 text-[7px] font-black text-slate-700 select-none cursor-not-allowed'>
                     🔑 Log Out
                   </div>
